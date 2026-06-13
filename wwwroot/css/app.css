@@ -1301,3 +1301,94 @@ img { max-width: 100%; display: block; }
   0% { transform: translateX(-100%); width: 50%; }
   100% { transform: translateX(200%); width: 50%; }
 }
+
+/* ============================================
+   MOBILE POLISH
+   ============================================ */
+
+@media (max-width: 768px) {
+
+  /* HERO */
+
+  .hero {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-name {
+    font-size: 2rem;
+  }
+
+  .hero-tagline {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-socials {
+    justify-content: center;
+  }
+
+  .hero-card {
+    max-width: 100%;
+  }
+
+  .hero-code {
+    font-size: 0.75rem;
+    padding: 1rem;
+  }
+
+  /* PROYECTOS */
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-footer {
+    flex-direction: column;
+  }
+
+  .project-footer .btn {
+    width: 100%;
+  }
+
+  /* SERVICIOS */
+
+  .service-title {
+    font-size: 1.4rem;
+  }
+
+  /* SKILLS */
+
+  .skill-category {
+    text-align: center;
+  }
+
+  .skill-cat-badges {
+    justify-content: center;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-socials {
+        justify-content: center;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .hero-side {
+        display: none;
+    }
+
+}
