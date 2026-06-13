@@ -1,0 +1,35 @@
+@namespace Portafolio.Components
+
+<section class="section @Class" id="@Id">
+    <div class="container">
+        @if (!string.IsNullOrEmpty(Titulo) || !string.IsNullOrEmpty(Eyebrow))
+        {
+            <header class="section-header reveal">
+                @if (!string.IsNullOrEmpty(Eyebrow))
+                {
+                    <span class="section-eyebrow">@Eyebrow</span>
+                }
+                @if (!string.IsNullOrEmpty(Titulo))
+                {
+                    <h2 class="section-title">@Titulo</h2>
+                }
+                @if (!string.IsNullOrEmpty(Subtitulo))
+                {
+                    <p class="section-subtitle">@Subtitulo</p>
+                }
+            </header>
+        }
+        <div class="section-content">
+            @ChildContent
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Eyebrow { get; set; }
+    [Parameter] public string? Titulo { get; set; }
+    [Parameter] public string? Subtitulo { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

@@ -1,0 +1,26 @@
+@inject Portafolio.Services.LanguageService Lang
+@implements IDisposable
+
+<button class="lang-btn" @onclick="ToggleAsync" aria-label="Cambiar idioma">
+    <span class="lang-dot"></span>
+    <span class="lang-text">@(Lang.IsEnglish ? "ESP" : "EN")</span>
+</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Lang.OnChange += HandleChange;
+    }
+
+    public void Dispose()
+    {
+        Lang.OnChange -= HandleChange;
+    }
+
+    private async Task ToggleAsync()
+    {
+        await Lang.ToggleAsync();
+    }
+
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

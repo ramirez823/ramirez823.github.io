@@ -1,0 +1,132 @@
+@page "/"
+@using Portafolio.Data
+@using Portafolio.Components
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<PageTitle>@LangSvc.T("title.home", PerfilSeed.Actual.Nombre)</PageTitle>
+
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-content reveal">
+            <p class="hero-eyebrow">@LangSvc.T("hero.greeting")</p>
+            <h1 class="hero-name">
+                @PerfilSeed.Actual.Nombre.Split(' ')[0] <span class="gradient">@PerfilSeed.Actual.Nombre.Split(' ').Last()</span>
+            </h1>
+            <h2 class="hero-title">@LangSvc.T("perfil.titulo")</h2>
+            <p class="hero-tagline">@LangSvc.T("perfil.tagline")</p>
+
+            <div class="hero-cta">
+                <a href="proyectos" class="btn btn-primary">
+                    <span>@LangSvc.T("hero.verProyectos")</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="contacto" class="btn btn-ghost">@LangSvc.T("hero.hablemos")</a>
+            </div>
+
+            <div class="hero-socials">
+                <a href="@PerfilSeed.Actual.GitHub" target="_blank" rel="noopener" aria-label="GitHub">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.17c-3.34.72-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                </a>
+                <a href="@PerfilSeed.Actual.LinkedIn" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zM8 19H5V8h3v11zM6.5 6.73c-.97 0-1.75-.79-1.75-1.76S5.53 3.21 6.5 3.21s1.75.79 1.75 1.76S7.47 6.73 6.5 6.73zM20 19h-3v-5.6c0-3.37-4-3.11-4 0V19h-3V8h3v1.77c1.4-2.59 7-2.78 7 2.48V19z"/>
+                    </svg>
+                </a>
+                <a href="mailto:@PerfilSeed.Actual.Email" aria-label="Email">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-side reveal reveal-delay-2">
+            <div class="hero-card">
+                <div class="hero-card-header">
+                    <span class="dot dot-r"></span>
+                    <span class="dot dot-y"></span>
+                    <span class="dot dot-g"></span>
+                    <span class="hero-card-filename">~/stack.json</span>
+                </div>
+                <pre class="hero-code"><code><span class="syn-pun">{</span>
+  <span class="syn-key">"rol"</span><span class="syn-pun">:</span>     <span class="syn-str">"@LangSvc.T("hero.code.rol")"</span><span class="syn-pun">,</span>
+  <span class="syn-key">"stack"</span><span class="syn-pun">:</span>   <span class="syn-str">@LangSvc.T("hero.code.stack")</span><span class="syn-pun">,</span>
+  <span class="syn-key">"@(LangSvc.IsEnglish ? "looking" : "buscando")"</span><span class="syn-pun">:</span> <span class="syn-str">"@LangSvc.T("hero.code.buscando")"</span><span class="syn-pun">,</span>
+  <span class="syn-key">"status"</span><span class="syn-pun">:</span>  <span class="syn-str">"@LangSvc.T("hero.code.status")"</span>
+<span class="syn-pun">}</span></code></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<Section Eyebrow="@LangSvc.T("sec.servicios.eyebrow")"
+         Titulo="@LangSvc.T("sec.servicios.titulo")"
+         Subtitulo="@LangSvc.T("sec.servicios.sub")"
+         Id="servicios">
+    <div class="services-grid">
+        @for (int i = 1; i <= 4; i++)
+        {
+            var num = i;
+            <article class="service-card reveal reveal-delay-@i">
+                <div class="service-head">
+                    <span class="service-num">@num.ToString("D2")</span>
+                    <span class="service-tag">@LangSvc.T($"srv.{num}.tag")</span>
+                </div>
+                <h3 class="service-title">@LangSvc.T($"srv.{num}.title")</h3>
+                <p class="service-desc">@LangSvc.T($"srv.{num}.desc")</p>
+                <div class="service-line"></div>
+            </article>
+        }
+    </div>
+</Section>
+
+<Section Eyebrow="@LangSvc.T("sec.proyectos.eyebrow")"
+         Titulo="@LangSvc.T("sec.proyectos.titulo")"
+         Subtitulo="@LangSvc.T("sec.proyectos.sub")"
+         Class="section-alt" Id="proyectos-destacados">
+    <div class="projects-grid">
+        @foreach (var (p, i) in ProyectosSeed.Todos.Where(x => x.Destacado).OrderBy(x => x.Orden).Select((p, i) => (p, i)))
+        {
+            <div class="reveal reveal-delay-@((i % 4) + 1)">
+                <ProjectCard Proyecto="p" />
+            </div>
+        }
+    </div>
+    <div class="section-cta">
+        <a href="proyectos" class="btn btn-ghost">@LangSvc.T("sec.proyectos.verTodos")</a>
+    </div>
+</Section>
+
+<Section Eyebrow="@LangSvc.T("sec.stack.eyebrow")"
+         Titulo="@LangSvc.T("sec.stack.titulo")"
+         Subtitulo="@LangSvc.T("sec.stack.sub")"
+         Id="stack">
+    <div class="skills-cloud">
+        @foreach (var (cat, idx) in SkillsSeed.Todas.GroupBy(s => s.Categoria).Select((c, i) => (c, i)))
+        {
+            <div class="skill-category reveal reveal-delay-@((idx % 4) + 1)">
+                <h4 class="skill-cat-title">@LangSvc.T("cat." + cat.Key.ToLower().Replace(" ", ""))</h4>
+                <div class="skill-cat-badges">
+                    @foreach (var s in cat.OrderByDescending(x =>
+                        x.Nivel == "avanzado" ? 3 :
+                        x.Nivel == "intermedio" ? 2 : 1))
+                    {
+                        <SkillBadge Skill="s" />
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</Section>
+
+@code {
+    protected override void OnInitialized() => LangSvc.OnChange += HandleChange;
+    public void Dispose() => LangSvc.OnChange -= HandleChange;
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

@@ -1,0 +1,32 @@
+@inherits LayoutComponentBase
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<div class="app-shell">
+    <NavMenu />
+
+    <main class="app-main">
+        @Body
+    </main>
+
+    <footer class="app-footer">
+        <div class="container">
+            <p>@LangSvc.T("footer.copy", DateTime.UtcNow.Year)</p>
+        </div>
+    </footer>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await LangSvc.InitAsync();
+        LangSvc.OnChange += HandleChange;
+    }
+
+    public void Dispose()
+    {
+        LangSvc.OnChange -= HandleChange;
+    }
+
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

@@ -1,0 +1,40 @@
+@using Portafolio.Data
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<header class="navbar">
+    <div class="container nav-container">
+        <a href="" class="nav-brand">
+            <span class="brand-mark">{'{ }'}</span>
+            <span class="brand-text">@PerfilSeed.Actual.Nombre.Split(' ')[0]</span>
+        </a>
+
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox" />
+        <label for="nav-toggle" class="nav-toggle" aria-label="Menú">
+            <span></span><span></span><span></span>
+        </label>
+
+        <nav class="nav-links">
+            <NavLink href="" Match="NavLinkMatch.All" class="nav-link">@LangSvc.T("nav.inicio")</NavLink>
+            <LangSwitcher />
+            <NavLink href="proyectos" class="nav-link">@LangSvc.T("nav.proyectos")</NavLink>
+            <NavLink href="sobre-mi" class="nav-link">@LangSvc.T("nav.sobreMi")</NavLink>
+            <NavLink href="contacto" class="nav-link">@LangSvc.T("nav.contacto")</NavLink>
+            <a href="@PerfilSeed.Actual.CurriculumUrl" target="_blank" class="nav-cta">@LangSvc.T("nav.cv")</a>
+        </nav>
+    </div>
+</header>
+
+@code {
+    protected override void OnInitialized()
+    {
+        LangSvc.OnChange += HandleChange;
+    }
+
+    public void Dispose()
+    {
+        LangSvc.OnChange -= HandleChange;
+    }
+
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

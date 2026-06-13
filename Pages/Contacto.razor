@@ -1,0 +1,35 @@
+@page "/contacto"
+@using Portafolio.Data
+@using Portafolio.Components
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<PageTitle>@LangSvc.T("title.contacto", PerfilSeed.Actual.Nombre)</PageTitle>
+
+<Section Eyebrow="@LangSvc.T("sec.contacto.eyebrow")"
+         Titulo="@LangSvc.T("sec.contacto.titulo")"
+         Subtitulo="@LangSvc.T("sec.contacto.sub")">
+    <div class="contact-grid">
+        <a href="mailto:@PerfilSeed.Actual.Email" class="contact-card reveal">
+            <div class="contact-icon">✉️</div>
+            <h3>@LangSvc.T("contacto.email")</h3>
+            <p>@PerfilSeed.Actual.Email</p>
+        </a>
+        <a href="@PerfilSeed.Actual.LinkedIn" target="_blank" rel="noopener" class="contact-card reveal reveal-delay-1">
+            <div class="contact-icon">💼</div>
+            <h3>@LangSvc.T("contacto.linkedin")</h3>
+            <p>@LangSvc.T("contacto.linkedinDesc")</p>
+        </a>
+        <a href="@PerfilSeed.Actual.GitHub" target="_blank" rel="noopener" class="contact-card reveal reveal-delay-2">
+            <div class="contact-icon">🐙</div>
+            <h3>@LangSvc.T("contacto.github")</h3>
+            <p>@LangSvc.T("contacto.githubDesc")</p>
+        </a>
+    </div>
+</Section>
+
+@code {
+    protected override void OnInitialized() => LangSvc.OnChange += HandleChange;
+    public void Dispose() => LangSvc.OnChange -= HandleChange;
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

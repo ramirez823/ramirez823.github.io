@@ -1,0 +1,75 @@
+@page "/sobre-mi"
+@using Portafolio.Data
+@using Portafolio.Components
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<PageTitle>@LangSvc.T("title.sobreMi", PerfilSeed.Actual.Nombre)</PageTitle>
+
+<Section Eyebrow="@LangSvc.T("sec.sobre.eyebrow")"
+         Titulo="@LangSvc.T("sec.sobre.titulo")"
+         Subtitulo="@LangSvc.T("sec.sobre.sub")">
+    <div class="about-grid">
+        <div class="about-text reveal">
+            <p>@LangSvc.T("perfil.sobreMi")</p>
+            <p>
+                <span class="about-location">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    @LangSvc.T("sobre.ubicacion")
+                </span>
+            </p>
+        </div>
+    </div>
+</Section>
+
+<Section Eyebrow="@LangSvc.T("sec.skills.eyebrow")"
+         Titulo="@LangSvc.T("sec.skills.titulo")"
+         Subtitulo="@LangSvc.T("sec.skills.sub")"
+         Class="section-alt">
+    <div class="skills-categories">
+        @foreach (var (cat, idx) in SkillsSeed.Todas.GroupBy(s => s.Categoria).Select((c, i) => (c, i)))
+        {
+            <div class="skill-category reveal reveal-delay-@((idx % 4) + 1)">
+                <h4 class="skill-cat-title">@LangSvc.T("cat." + cat.Key.ToLower().Replace(" ", ""))</h4>
+                <div class="skill-cat-badges">
+                    @foreach (var s in cat.OrderByDescending(x =>
+                        x.Nivel == "avanzado" ? 3 :
+                        x.Nivel == "intermedio" ? 2 : 1))
+                    {
+                        <SkillBadge Skill="s" />
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</Section>
+
+<Section Eyebrow="@LangSvc.T("sec.exp.eyebrow")"
+         Titulo="@LangSvc.T("sec.exp.titulo")">
+    <div class="timeline">
+        @foreach (var (exp, i) in ExperienciaSeed.Toda.Select((e, i) => (e, i)))
+        {
+            <article class="timeline-item reveal reveal-delay-@((i % 4) + 1)">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <span class="timeline-period">@exp.Periodo</span>
+                    <h3 class="timeline-title">@exp.Titulo</h3>
+                    <p class="timeline-org">@exp.Organizacion</p>
+                    @if (!string.IsNullOrEmpty(exp.Descripcion))
+                    {
+                        <p class="timeline-desc">@exp.Descripcion</p>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+</Section>
+
+@code {
+    protected override void OnInitialized() => LangSvc.OnChange += HandleChange;
+    public void Dispose() => LangSvc.OnChange -= HandleChange;
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

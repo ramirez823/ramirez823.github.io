@@ -1,0 +1,26 @@
+@using Portafolio.Models
+@using Portafolio.Data
+@namespace Portafolio.Components
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<div class="skill-badge nivel-@Skill.Nivel.ToLower()">
+    <span class="skill-name">@Skill.Nombre</span>
+    <span class="skill-level">@NivelLabel</span>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Skill Skill { get; set; } = default!;
+
+    private string NivelLabel => Skill.Nivel switch
+    {
+        "avanzado" => LangSvc.T("nivel.avanzado"),
+        "intermedio" => LangSvc.T("nivel.intermedio"),
+        "basico" => LangSvc.T("nivel.basico"),
+        _ => Skill.Nivel
+    };
+
+    protected override void OnInitialized() => LangSvc.OnChange += HandleChange;
+    public void Dispose() => LangSvc.OnChange -= HandleChange;
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

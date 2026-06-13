@@ -1,0 +1,63 @@
+@page "/proyectos"
+@using Portafolio.Data
+@using Portafolio.Components
+@inject Portafolio.Services.LanguageService LangSvc
+@implements IDisposable
+
+<PageTitle>@LangSvc.T("title.proyectos", PerfilSeed.Actual.Nombre)</PageTitle>
+
+<Section Eyebrow="@LangSvc.T("sec.proyectos.eyebrow")"
+         Titulo="@LangSvc.T("sec.proyectos.titulo")"
+         Subtitulo="@LangSvc.T("sec.proyectos.sub")">
+    <div class="project-filters reveal">
+        <button class="filter-btn @(filtro == "todos" ? "active" : "")" @onclick='() => filtro = "todos"'>
+            @LangSvc.T("filtro.todos")
+        </button>
+        <button class="filter-btn @(filtro == "destacados" ? "active" : "")" @onclick='() => filtro = "destacados"'>
+            @LangSvc.T("filtro.destacados")
+        </button>
+        <button class="filter-btn @(filtro == "completados" ? "active" : "")" @onclick='() => filtro = "completados"'>
+            @LangSvc.T("filtro.completados")
+        </button>
+        <button class="filter-btn @(filtro == "wip" ? "active" : "")" @onclick='() => filtro = "wip"'>
+            @LangSvc.T("filtro.wip")
+        </button>
+    </div>
+
+    <div class="projects-grid">
+        @foreach (var (p, i) in ProyectosFiltrados.Select((p, i) => (p, i)))
+        {
+            <div class="reveal reveal-delay-@((i % 4) + 1)">
+                <ProjectCard Proyecto="p" />
+            </div>
+        }
+    </div>
+
+    @if (!ProyectosFiltrados.Any())
+    {
+        <p class="empty-state">@LangSvc.T("filtro.empty")</p>
+    }
+</Section>
+
+@code {
+    private string filtro = "todos";
+
+    private IEnumerable<Portafolio.Models.Proyecto> ProyectosFiltrados
+    {
+        get
+        {
+            var todos = ProyectosSeed.Todos.OrderBy(x => x.Orden).AsEnumerable();
+            return filtro switch
+            {
+                "destacados" => todos.Where(x => x.Destacado),
+                "completados" => todos.Where(x => x.Estado == "completed"),
+                "wip" => todos.Where(x => x.Estado == "wip"),
+                _ => todos
+            };
+        }
+    }
+
+    protected override void OnInitialized() => LangSvc.OnChange += HandleChange;
+    public void Dispose() => LangSvc.OnChange -= HandleChange;
+    private void HandleChange() => InvokeAsync(StateHasChanged);
+}

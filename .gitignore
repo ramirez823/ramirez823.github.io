@@ -1,0 +1,38 @@
+## Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+*.user
+*.suo
+*.userprefs
+*.pidb
+*.userosscache
+*.sln.docstates
+*.nuget.props
+*.nuget.targets
+
+## VSCode
+.vs/
+.vscode/
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+
+## Rider
+.idea/
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Publish
+publish/
+*.pubxml
+*.pubxml.user
+
+## .NET
+*.dll
+*.pdb
+*.exe
+*.cache
+*.log
