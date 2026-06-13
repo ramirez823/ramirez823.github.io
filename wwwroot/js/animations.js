@@ -7,38 +7,59 @@
   'use strict';
 
   // ---- 1. SCROLL REVEAL via IntersectionObserver ----
-  function initReveal() {
-    const reveals = document.querySelectorAll('.reveal:not(.visible)');
-    if (!reveals.length) return;
+  // Un solo observer global compartido; el MutationObserver solo
+  // agrega al observer los nodos .reveal nuevos, no crea uno nuevo.
+  let revealObserver = null;
+  const REVEAL_ATTR = 'data-reveal-bound';
 
-    // Si el elemento ya está visible en el viewport al cargar,
-    // marcarlo visible inmediatamente (no esperar al observer).
-    reveals.forEach((el) => {
-      const rect = el.getBoundingClientRect();
-      const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-      if (isInView) {
-        el.classList.add('visible');
-        return;
-      }
-    });
-
-    // Para los que quedan fuera del viewport, observar
-    const pending = document.querySelectorAll('.reveal:not(.visible)');
-    if (!pending.length) return;
-
-    const observer = new IntersectionObserver(
+  function ensureRevealObserver() {
+    if (revealObserver) return revealObserver;
+    revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+            revealObserver.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px -10% 0px' }
     );
+    return revealObserver;
+  }
 
-    pending.forEach((el) => observer.observe(el));
+  function bindRevealEl(el) {
+    if (!(el instanceof Element)) return;
+    if (el.classList.contains('visible')) return;
+    if (el.hasAttribute(REVEAL_ATTR)) return;
+    // Si ya está en el viewport al momento de bindear, marcar visible de una.
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inView) {
+      el.classList.add('visible');
+      el.setAttribute(REVEAL_ATTR, '1');
+      return;
+    }
+    el.setAttribute(REVEAL_ATTR, '1');
+    ensureRevealObserver().observe(el);
+  }
+
+  function initReveal(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll('.reveal').forEach(bindRevealEl);
+  }
+
+  // Red de seguridad: después de 2.5s, forzar visible cualquier .reveal
+  // que ya esté en viewport pero no haya sido gatillado (anti race condition).
+  function revealSafetyNet() {
+    setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.visible)').forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('visible');
+        }
+      });
+    }, 2500);
   }
 
   // ---- 2. NAVBAR scroll state (background más opaco) ----
@@ -104,11 +125,12 @@
 
   let initTimer = null;
   function boot() {
-    initReveal();
+    initReveal(document);
     initNavbar();
     initMarquees();
     initHeroTilt();
     initSmoothScroll();
+    revealSafetyNet();
   }
 
   function scheduleBoot() {
@@ -116,14 +138,33 @@
     initTimer = setTimeout(boot, 100);
   }
 
+  // Si Blazor ya terminó de hidratar (pasa tarde en WASM), corré boot YA.
   document.addEventListener('DOMContentLoaded', scheduleBoot);
   window.addEventListener('load', scheduleBoot);
+  // Blazor WASM emite 'enhancedload' después del primer render interactivo.
+  window.addEventListener('enhancedload', scheduleBoot);
 
-  // Blazor fires 'enhancedload' on navigation, and the app root mutates.
-  // Watch for new reveal elements and re-observe.
-  const mo = new MutationObserver(() => {
-    initReveal();
-    initMarquees();
+  // Cuando aparezcan nuevos .reveal en el DOM, agregarlos al observer
+  // existente (no crear uno nuevo). Escaneamos solo subárboles nuevos
+  // para no iterar todo el document en cada mutación.
+  const mo = new MutationObserver((mutations) => {
+    let needsMarquee = false;
+    for (const m of mutations) {
+      m.addedNodes.forEach((node) => {
+        if (!(node instanceof Element)) return;
+        if (node.classList && node.classList.contains('reveal')) {
+          bindRevealEl(node);
+        }
+        if (node.querySelectorAll) {
+          node.querySelectorAll('.reveal').forEach(bindRevealEl);
+          if (node.querySelector('.marquee-track')) needsMarquee = true;
+        }
+        if (node.classList && node.classList.contains('marquee-track')) {
+          needsMarquee = true;
+        }
+      });
+    }
+    if (needsMarquee) initMarquees();
   });
   mo.observe(document.body, { childList: true, subtree: true });
 })();

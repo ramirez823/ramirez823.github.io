@@ -1,4 +1,4 @@
-# Portafolio — Daniel Rodríguez Vargas
+# Portafolio — Daniel Ramirez Varela
 
 Sitio de portafolio personal construido con **Blazor WebAssembly** y **.NET 8**.
 

@@ -9,7 +9,7 @@ public static class PerfilSeed
 {
     public static Perfil Actual => new()
     {
-        Nombre = "Daniel Ramirez",
+        Nombre = "Daniel Ramirez Varela",
         Titulo = "Ingeniero en Sistemas | Backend .NET",
         Tagline = "Construyo backends robustos con .NET, C# y SQL Server. Próximo a graduarme, ya trabajo con patrones enterprise reales.",
         SobreMi = "Soy estudiante de último año de Ingeniería en Sistemas con foco en desarrollo backend .NET. " +

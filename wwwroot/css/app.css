@@ -116,6 +116,10 @@ img { max-width: 100%; display: block; }
   z-index: 2;
 }
 
+@media (max-width: 600px) {
+  .container { padding: 0 1rem; }
+}
+
 /* ============================================
    SCROLL REVEAL (animación de entrada)
    ============================================ */
@@ -333,6 +337,7 @@ img { max-width: 100%; display: block; }
   .nav-toggle-checkbox:checked ~ .nav-links { display: flex; }
   .nav-link { padding: 0.75rem 1rem; }
   .nav-cta { margin: 0.5rem 0 0 0; text-align: center; }
+  .nav-brand .brand-text { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 /* ============================================
@@ -392,7 +397,10 @@ img { max-width: 100%; display: block; }
   margin-top: 3rem;
 }
 
-@media (max-width: 600px) { .section-title { font-size: 2rem; } }
+@media (max-width: 600px) {
+  .section-title { font-size: 2rem; overflow-wrap: anywhere; }
+  .section { padding: 4rem 0; }
+}
 
 /* ============================================
    HERO
@@ -412,6 +420,9 @@ img { max-width: 100%; display: block; }
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
   .hero { padding: 5rem 0 3rem; }
+  /* Neutralizar rotación 3D en mobile: la card rotada corta el contenido en pantallas angostas */
+  .hero-card { transform: none !important; }
+  .hero-card:hover { transform: none !important; }
 }
 
 .hero-eyebrow {
@@ -464,7 +475,10 @@ img { max-width: 100%; display: block; }
   50% { background-position: 100% 50%; }
 }
 
-@media (max-width: 600px) { .hero-name { font-size: 2.75rem; letter-spacing: -1px; } }
+@media (max-width: 600px) {
+  .hero-name { font-size: 2.5rem; letter-spacing: -1px; overflow-wrap: anywhere; word-break: break-word; }
+  .hero-name .gradient { display: inline-block; }
+}
 
 .hero-title {
   font-size: 1.375rem;
@@ -488,6 +502,11 @@ img { max-width: 100%; display: block; }
   gap: 0.75rem;
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .hero-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta .btn { justify-content: center; width: 100%; }
 }
 
 .hero-socials {
@@ -780,6 +799,10 @@ img { max-width: 100%; display: block; }
   position: relative;
 }
 
+@media (max-width: 600px) {
+  .project-image { height: 160px; }
+}
+
 .project-image::after {
   content: '';
   position: absolute;
@@ -877,6 +900,7 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   padding: 0.55rem 0.75rem;
   font-size: 0.8rem;
+  min-width: 0; /* permite que el flex item se encoja sin desbordar el card */
 }
 
 /* Filtros */
@@ -989,6 +1013,12 @@ img { max-width: 100%; display: block; }
    SKILLS (estilo original — grid de categorías con badges)
    ============================================ */
 .skills-cloud {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.skills-categories {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
@@ -1166,6 +1196,13 @@ img { max-width: 100%; display: block; }
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  min-width: 0; /* evita que textos largos (emails) rompan el grid en mobile */
+}
+
+.contact-card p { word-break: break-all; }
+
+@media (max-width: 600px) {
+  .contact-card { padding: 1.75rem 1.25rem; }
 }
 
 .contact-card::before {

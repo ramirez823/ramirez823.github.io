@@ -11,7 +11,8 @@
         <div class="hero-content reveal">
             <p class="hero-eyebrow">@LangSvc.T("hero.greeting")</p>
             <h1 class="hero-name">
-                @PerfilSeed.Actual.Nombre.Split(' ')[0] <span class="gradient">@PerfilSeed.Actual.Nombre.Split(' ').Last()</span>
+                @{ var partes = PerfilSeed.Actual.Nombre.Split(' ', 2); }
+                @partes[0] <span class="gradient">@partes[1]</span>
             </h1>
             <h2 class="hero-title">@LangSvc.T("perfil.titulo")</h2>
             <p class="hero-tagline">@LangSvc.T("perfil.tagline")</p>
