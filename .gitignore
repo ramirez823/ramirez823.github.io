@@ -36,3 +36,10 @@ publish/
 *.exe
 *.cache
 *.log
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
