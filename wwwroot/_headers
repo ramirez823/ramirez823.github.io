@@ -1,0 +1,21 @@
+# Cloudflare Pages cache headers.
+# Mirrors netlify.toml. Read top-to-bottom; first match wins.
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+# Content-addressed framework DLLs/WASM: cache forever, never revalidate.
+/_framework/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Hash-named site assets.
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+/js/*
+  Cache-Control: public, max-age=31536000, immutable
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML entry points: always revalidate so deploys are immediately visible.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate

@@ -55,6 +55,7 @@
 html {
   scroll-behavior: smooth;
   font-feature-settings: "ss01" on, "kern" on;
+  font-size: 18.4px;     /* base 16px × 1.15 → todos los `rem` escalan +15% */
 }
 
 body {
@@ -62,12 +63,21 @@ body {
   color: var(--text-1);
   font-family: var(--font-sans);
   font-weight: 300;
-  font-size: 16px;
+  font-size: 1rem;       /* hereda el 18.4px del <html>; queda escalado +15% */
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
+
+/*
+ * Reset local del font-size dentro del hero para que NO escale con el +15%
+ * global del <html>. Como todos los font-size del hero están en rem, basta
+ * con devolver la base a 16px (16 / 18.4 ≈ 0.8696) aquí: cualquier 1rem
+ * hijo vuelve a equivaler a 16px reales y los valores declarados
+ * (4rem, 2.5rem mobile, 1.375rem, etc.) se renderizan idénticos a antes.
+ */
+.hero { font-size: 0.8696rem; }   /* ≈ 16px / 18.4px */
 
 /* ============================================
    NOISE TEXTURE OVERLAY
@@ -109,7 +119,7 @@ a:hover { color: var(--magenta); }
 img { max-width: 100%; display: block; }
 
 .container {
-  max-width: 1080px;
+  max-width: 1280px;   /* ≈ max-w-7xl: respira en desktop sin irse a 1440+ */
   margin: 0 auto;
   padding: 0 1.5rem;
   position: relative;
@@ -412,14 +422,19 @@ img { max-width: 100%; display: block; }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 4rem;
-  align-items: center;
+  grid-template-columns: 1.15fr 1fr;   /* izquierda un poco más ancha que la card */
+  gap: 5rem;                            /* más aire entre texto y code card */
+  align-items: start;                   /* texto arriba, no centrado vertical */
+}
+
+.hero-content {
+  text-align: left;                     /* desktop: izquierda; mobile lo anula abajo */
 }
 
 @media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .hero-grid { grid-template-columns: 1fr; gap: 2.75rem; }
   .hero { padding: 5rem 0 3rem; }
+  .hero-content { text-align: center; }  /* mobile: centrado, clásico */
   /* Neutralizar rotación 3D en mobile: la card rotada corta el contenido en pantallas angostas */
   .hero-card { transform: none !important; }
   .hero-card:hover { transform: none !important; }
@@ -467,7 +482,29 @@ img { max-width: 100%; display: block; }
   background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
-  animation: gradient-shift 8s ease-in-out infinite;
+  /* Animación de background-position deshabilitada: en Blink/Webkit con
+     background-clip:text + -webkit-text-fill-color:transparent producía un
+     rectángulo blanco parpadeando alrededor del H1 en PC y mobile al cargar.
+     El gradient ya se ve bien estático; el movimiento no aporta. */
+  animation: none;
+}
+
+/* El span dentro del H1 era inline-block solo en mobile; eso agravaba el
+   bug de pintado del clip. Lo dejamos inline como cualquier span normal. */
+.hero-name .gradient { display: inline; }
+
+/* H1 no es interactivo: neutralizamos cualquier outline/foco residual. */
+.hero-name { outline: none; }
+.hero-name:focus,
+.hero-name:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.hero-name::selection,
+.hero-name .gradient::selection {
+  background: transparent;
+  color: inherit;
+  -webkit-text-fill-color: var(--text-0);
 }
 
 @keyframes gradient-shift {
@@ -477,7 +514,8 @@ img { max-width: 100%; display: block; }
 
 @media (max-width: 600px) {
   .hero-name { font-size: 2.5rem; letter-spacing: -1px; overflow-wrap: anywhere; word-break: break-word; }
-  .hero-name .gradient { display: inline-block; }
+  /* .gradient se mantiene inline (ver bloque base arriba); inline-block
+     producía el rectángulo blanco al combinarse con background-clip:text. */
 }
 
 .hero-title {
@@ -493,8 +531,8 @@ img { max-width: 100%; display: block; }
   font-size: 1.05rem;
   font-weight: 300;
   max-width: 32rem;
-  margin-bottom: 2.5rem;
-  line-height: 1.5;
+  margin-bottom: 2.75rem;   /* más aire antes de los botones */
+  line-height: 1.6;
 }
 
 .hero-cta {
@@ -504,14 +542,15 @@ img { max-width: 100%; display: block; }
   flex-wrap: wrap;
 }
 
+.hero-socials {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;       /* separación extra respecto a los botones */
+}
+
 @media (max-width: 600px) {
   .hero-cta { flex-direction: column; align-items: stretch; }
   .hero-cta .btn { justify-content: center; width: 100%; }
-}
-
-.hero-socials {
-  display: flex;
-  gap: 0.5rem;
 }
 
 .hero-socials a {
@@ -520,10 +559,10 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   width: 42px;
   height: 42px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.08);   /* borde sutil translúcido */
   border-radius: 8px;
   color: var(--text-1);
-  background: var(--bg-1);
+  background: rgba(255, 255, 255, 0.02);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
@@ -538,8 +577,8 @@ img { max-width: 100%; display: block; }
 /* Hero code card */
 .hero-card {
   background: var(--bg-1);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);   /* borde sutil translúcido */
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
@@ -554,7 +593,7 @@ img { max-width: 100%; display: block; }
   gap: 0.4rem;
   padding: 0.75rem 1rem;
   background: var(--bg-2);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .dot { width: 11px; height: 11px; border-radius: 50%; }
@@ -640,7 +679,7 @@ img { max-width: 100%; display: block; }
 .btn-ghost {
   background: transparent;
   color: var(--text-1);
-  border-color: var(--border);
+  border-color: rgba(255, 255, 255, 0.12);   /* borde sutil translúcido */
 }
 .btn-ghost:hover {
   border-color: var(--purple);
@@ -946,71 +985,8 @@ img { max-width: 100%; display: block; }
 }
 
 /* ============================================
-   SKILLS MARQUEE (la sección que te gustó, mejorada)
-   ============================================ */
-.skills-marquee-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.marquee {
-  display: flex;
-  overflow: hidden;
-  user-select: none;
-  gap: 1rem;
-  padding: 2rem 0;
-  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-}
-
-.marquee-track {
-  display: flex;
-  gap: 1rem;
-  flex-shrink: 0;
-  animation: marquee 30s linear infinite;
-}
-
-.marquee-reverse .marquee-track { animation-direction: reverse; }
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-
-.skill-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
-  background: var(--bg-1);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 0.9rem;
-  color: var(--text-1);
-  font-weight: 400;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
-
-.skill-chip:hover {
-  border-color: var(--purple);
-  color: var(--text-0);
-  background: var(--bg-2);
-  transform: scale(1.05);
-}
-
-.skill-chip-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.skill-chip-dot.avanzado { background: var(--success); box-shadow: 0 0 8px var(--success); }
-.skill-chip-dot.intermedio { background: var(--warning); }
-.skill-chip-dot.basico { background: var(--text-3); }
-
-/* ============================================
-   SKILLS (estilo original — grid de categorías con badges)
+   SKILLS — grid de categorías con badges
+   (la variante marquee se removió: no se usa en ninguna página)
    ============================================ */
 .skills-cloud {
   display: grid;
@@ -1370,25 +1346,10 @@ img { max-width: 100%; display: block; }
     justify-content: center;
   }
 
-}
-
-@media (max-width: 768px) {
-
-    .hero-content {
-        text-align: center;
-    }
-
-    .hero-socials {
-        justify-content: center;
-    }
-
-}
-
-
-@media (max-width: 768px) {
-
-    .hero-side {
-        display: none;
-    }
+  /* The hero card on the right is decorative on mobile; hide to
+     give the text column the full width. */
+  .hero-side {
+    display: none;
+  }
 
 }

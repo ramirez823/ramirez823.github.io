@@ -4,6 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!--
+      Performance: explicit publish-time optimizations.
+      These are mostly on by default in .NET 8, but pinning them
+      prevents silent regressions if the SDK defaults ever change.
+    -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <CompressionFormats>gzip,brotli</CompressionFormats>
   </PropertyGroup>
 
   <ItemGroup>

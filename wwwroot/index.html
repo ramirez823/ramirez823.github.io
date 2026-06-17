@@ -9,15 +9,43 @@
     <title>Daniel Ramirez Varela — Backend .NET</title>
     <base href="/" />
 
+    <!--
+      Critical boot CSS inlined to avoid the FOUC of the loading screen.
+      Mirrors the .app-boot rules in css/app.css. Without this, the user
+      sees a brief flash of unstyled text on the dark background before
+      app.css is downloaded and parsed.
+    -->
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { background: #0a0a14; color: #b4b8c8; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        .app-boot { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; z-index: 9999; }
+        .app-boot-mark { font-size: 2.5rem; color: #533afd; font-weight: 300; letter-spacing: -0.96px; animation: pulse 1.5s ease-in-out infinite; }
+        .app-boot-progress { width: 200px; height: 2px; background: #2a2d4a; border-radius: 2px; overflow: hidden; }
+        .app-boot-progress-bar { height: 100%; background: linear-gradient(90deg, #533afd, #f96bee); border-radius: 2px; animation: bp 1.5s ease-in-out infinite; }
+        .app-boot p { font-size: 0.9rem; }
+        @keyframes pulse { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+        @keyframes bp { 0% { transform: translateX(-100%); width: 50%; } 100% { transform: translateX(200%); width: 50%; } }
+    </style>
+
     <!-- Fonts: Source Sans 3 (Stripe sohne-var substitute) + Source Code Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500;700&display=swap" />
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500;700&display=swap" />
+          href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500;700&display=swap"
+          media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500;700&display=swap" /></noscript>
 
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="Portafolio.styles.css" rel="stylesheet" />
+
+    <!--
+      Preload the Blazor boot manifest so the runtime can start
+      resolving the assembly list the moment the .js arrives, instead
+      of waiting for the synchronous JSON fetch round-trip.
+    -->
+    <link rel="preload" href="_framework/blazor.boot.json" as="fetch" crossorigin="anonymous" />
 </head>
 
 <body>
@@ -37,7 +65,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script src="js/animations.js"></script>
+    <script src="js/animations.js" defer></script>
 </body>
 
 </html>
